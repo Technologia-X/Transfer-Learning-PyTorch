@@ -6,7 +6,7 @@ import torch.nn as nn
 from torchvision import models
 from utils import relocate_model
 
-class Model:
+class Model(nn.Module):
     '''
     VGG-16 transfer learning model.
     '''
@@ -15,7 +15,8 @@ class Model:
         '''
         Initialize VGG-16 from TorchVision
         '''
-
+        super(Model, self).__init__()
+        
         self.vgg_model = models.vgg16_bn(pretrained=pretrained_download, progress=True) #load the model architecture and download the pre-trained weight file if not available already.
         if pretrained_download:
             relocate_model(downloaded_path=model_download_path, model_name=new_model_name) #relocate the downloaded model to the desired path.
