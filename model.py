@@ -11,7 +11,7 @@ class Model:
     VGG-16 transfer learning model.
     '''
 
-    def __init__(self, model_download_path, new_model_name, input_feature_size, num_class, pretrained_download=True, freeze_feature_layer=True):
+    def __init__(self, model_download_path, new_model_name, input_feature_size, num_class, pretrained_download=True, freeze_feature_layer=False):
         '''
         Initialize VGG-16 from TorchVision
         '''
