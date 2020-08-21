@@ -2,13 +2,18 @@
 Configuration file for model training.
 '''
 import os
+import logging
 from utils import get_classes, generate_img_label, create_dir, check_file_exist, get_device
 from main_cfg import ARGS
 
+
+logging.basicConfig(level=logging.INFO)
+LOG = logging.getLogger(__name__)
 ####################################################### GENERAL CONFIGURATIONS #######################################################
 CURR_FILE_PATH = '/'.join(os.path.realpath(__file__).split('/')[:-1]) #the absolute path of this file.
 DEVICE = get_device() #identify the device to be used for training/evaluation
-DATASET_PATH = CURR_FILE_PATH + ARGS.dataset_path #absolute path of the dataset folder.
+TRAIN_DATASET_PATH = ARGS.train_dataset_path #absolute path of the dataset folder.
+TEST_DATASET_PATH = ARGS.test_dataset_path #absolute path of the dataset folder.
 IMAGE_EXTS = ARGS.image_exts #image file types.
 
 MODEL_PATH = CURR_FILE_PATH + ARGS.model_path #trained model save path.
@@ -47,11 +52,13 @@ except TypeError:
 NOISE_MODE = ARGS.noise_mode #skimage noise modes.
 
 ####################################################### DATASET CONFIGURATIONS #######################################################
-CLASSES, NUM_CLASSES = get_classes(dataset_folder_path=DATASET_PATH) #get all the classes names and the number of classes.
+CLASSES, NUM_CLASSES = get_classes(dataset_folder_path=TRAIN_DATASET_PATH) #get all the classes names and the number of classes.
 
-IMG_LABEL_LIST = generate_img_label(dataset_path=DATASET_PATH, classes=CLASSES, img_exts=IMAGE_EXTS)
+TRAIN_IMG_LABEL_LIST = generate_img_label(dataset_path=TRAIN_DATASET_PATH, classes=CLASSES, img_exts=IMAGE_EXTS)
+TEST_IMG_LABEL_LIST = generate_img_label(dataset_path=TEST_DATASET_PATH, classes=CLASSES, img_exts=IMAGE_EXTS)
 
-TOTAL_DATA = len(IMG_LABEL_LIST)
+TOTAL_TRAIN_DATA = len(TRAIN_IMG_LABEL_LIST)
+TOTAL_TEST_DATA = len(TEST_IMG_LABEL_LIST)
 
 NUM_WORKERS = ARGS.num_workers #number of workers to process the dataset loading.
 DATA_SHUFFLE = ARGS.data_shuffle
@@ -64,3 +71,6 @@ LEARNING_RATE = ARGS.learning_rate
 LR_DECAY_RATE = ARGS.learning_rate_decay
 PLOT_GRAPH = ARGS.plot_graph
 FEATURE_INPUT_SIZE = 512 * (RESIZED_IMAGE_SIZE//(2**5))**2 #final conv layer output channel x subsampled image height x subsampled image width
+
+LOG.info("Classes in the dataset are : %s", " ,".join(CLASSES))
+
